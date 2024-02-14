@@ -85,30 +85,32 @@ const QrAppRelease = () => {
         imgUrl = dataUrl;
       })
       .catch((error) => {
-        toast(error.toString());
+        toast("htmlToImage error:" + error.toString());
       });
     if (!imgUrl) return;
     console.log("dataUrl =>", imgUrl);
     // const imageObjectURL = URL.createObjectURL(imgUrl);
     setQrImgUrl(imgUrl);
-    await requestClipboardWritePermission().then((hasPermission) => {
-      if (hasPermission) {
-        copyImageToClipboard(imgUrl)
-          .then((value) => {
-            console.log("Image Copied");
-            toast("Copied");
-            // const imageObjectURL = URL.createObjectURL(value);
-            // setQrImgUrl(imageObjectURL);
-            const file = new File([value], "image.jpg", { type: value.type });
-            setQrImgFile(file);
-          })
-          .catch((e) => {
-            console.log("Error: ", e.message);
-          });
-      }
-    }).catch(error=>{
-        toast(error.toString());
-    });
+    await requestClipboardWritePermission()
+      .then((hasPermission) => {
+        if (hasPermission) {
+          copyImageToClipboard(imgUrl)
+            .then((value) => {
+              console.log("Image Copied");
+              toast("Copied");
+              // const imageObjectURL = URL.createObjectURL(value);
+              // setQrImgUrl(imageObjectURL);
+              const file = new File([value], "image.jpg", { type: value.type });
+              setQrImgFile(file);
+            })
+            .catch((e) => {
+              console.log("Error: ", e.message);
+            });
+        }
+      })
+      .catch((error) => {
+        toast("requestClipboardWritePermission error:" + error.toString());
+      });
 
     localStorage.setItem("last_save_text1", text1.trim());
     localStorage.setItem("last_save_text2", text2.trim());
