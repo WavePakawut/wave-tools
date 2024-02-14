@@ -26,6 +26,7 @@ import { toast } from "sonner";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { RWebShare } from "react-web-share";
 import { error } from "console";
+import { getBase64ImageFile } from "@/helpers";
 
 const QrAppRelease = () => {
   const { Canvas: CanvasQR } = useQRCode();
@@ -131,19 +132,44 @@ const QrAppRelease = () => {
     () => lastText2List.map((text) => ({ value: text, label: text })),
     []
   );
+  //   const onShare = async () => {
+
+  //     const canShare = navigator.canShare();
+  //     console.log("canShare =>", canShare);
+  //     console.log("qrImgUrl =>", qrImgUrl);
+  //     if (canShare && qrImgFile) {
+  //       await navigator.share({
+  //         files: [qrImgFile],
+  //         title: "Title", // titleText
+  //         text: "text", // text
+  //       });
+  //     } else {
+  //       toast("Cannot share with this browser");
+  //     }
+  //   };
   const onShare = async () => {
-    const canShare = navigator.canShare();
-    console.log("canShare =>", canShare);
-    console.log("qrImgUrl =>", qrImgUrl);
-    if (canShare && qrImgFile) {
-      await navigator.share({
-        files: [qrImgFile],
-        title: "Title", // titleText
-        text: "text", // text
+    const qrCodeView = document.getElementById("qr-view-box");
+    qrCodeView?.click();
+
+    if (!qrCodeView) return;
+    let imgUrl = "";
+    await htmlToImage
+      .toPng(qrCodeView)
+      .then(function (dataUrl) {
+        /* do something */
+        imgUrl = dataUrl;
+      })
+      .catch((error) => {
+        toast("htmlToImage error:" + error.toString());
       });
-    } else {
-      toast("Cannot share with this browser");
-    }
+    if (!imgUrl) return;
+    console.log("dataUrl =>", imgUrl);
+    const file = getBase64ImageFile(imgUrl);
+    setQrImgFile(file);
+    setTimeout(() => {
+      const btnWebShare = document.getElementById("btn_web_share");
+      btnWebShare?.click();
+    }, 1000);
   };
   return (
     <div className="flex justify-center p-2">
@@ -267,15 +293,27 @@ const QrAppRelease = () => {
         >
           Copy
         </Button>
-        {/* <Button
+        <Button
           variant="shadow"
           onClick={onShare}
           className="mt-2"
           color="secondary"
         >
           Share
-        </Button> */}
-        {qrImgFile && (
+        </Button>
+        <RWebShare
+          data={
+            {
+              text: "Like humans, flamingos make friends for life",
+              files: [qrImgFile],
+              title: "Flamingos",
+            } as any
+          }
+          onClick={() => console.log("shared successfully!")}
+        >
+          <button id={"btn_web_share"} />
+        </RWebShare>
+        {/* {qrImgFile && (
           <RWebShare
             data={
               {
@@ -290,7 +328,7 @@ const QrAppRelease = () => {
               Share
             </Button>
           </RWebShare>
-        )}
+        )} */}
 
         {/* <LineShareButton
           openShareDialogOnClick={qrImgUrl !== "none"}
