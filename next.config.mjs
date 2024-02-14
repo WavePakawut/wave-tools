@@ -1,4 +1,8 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
+const isProd = process.env.NODE_ENV === 'production';
+const nextConfig = {
+    reactStrictMode: true,
+    assetPrefix: isProd ? '/wave-tools/' : '',
+};
 
 export default nextConfig;
