@@ -25,6 +25,7 @@ import {
 import { toast } from "sonner";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { RWebShare } from "react-web-share";
+import { error } from "console";
 
 const QrAppRelease = () => {
   const { Canvas: CanvasQR } = useQRCode();
@@ -77,10 +78,15 @@ const QrAppRelease = () => {
     const qrCodeView = document.getElementById("qr-view-box");
     if (!qrCodeView) return;
     let imgUrl = "";
-    await htmlToImage.toPng(qrCodeView).then(function (dataUrl) {
-      /* do something */
-      imgUrl = dataUrl;
-    });
+    await htmlToImage
+      .toPng(qrCodeView)
+      .then(function (dataUrl) {
+        /* do something */
+        imgUrl = dataUrl;
+      })
+      .catch((error) => {
+        toast(error);
+      });
     if (!imgUrl) return;
     console.log("dataUrl =>", imgUrl);
     // const imageObjectURL = URL.createObjectURL(imgUrl);
@@ -100,6 +106,8 @@ const QrAppRelease = () => {
             console.log("Error: ", e.message);
           });
       }
+    }).catch(error=>{
+        toast(error);
     });
 
     localStorage.setItem("last_save_text1", text1.trim());
@@ -136,7 +144,7 @@ const QrAppRelease = () => {
     }
   };
   return (
-    <div className="flex justify-center">
+    <div className="flex justify-center p-2">
       <div className="flex flex-col">
         <Autocomplete
           id="qr-text-1"
