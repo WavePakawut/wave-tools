@@ -265,18 +265,23 @@ const QrAppRelease = () => {
         >
           Share
         </Button> */}
-        <RWebShare
-          data={
-            {
-              text: "Like humans, flamingos make friends for life",
-              files: [qrImgFile],
-              title: "Flamingos",
-            } as any
-          }
-          onClick={() => console.log("shared successfully!")}
-        >
-          <button>Share 🔗</button>
-        </RWebShare>
+        {qrImgFile && (
+          <RWebShare
+            data={
+              {
+                text: "Like humans, flamingos make friends for life",
+                files: [qrImgFile],
+                title: "Flamingos",
+              } as any
+            }
+            onClick={() => console.log("shared successfully!")}
+          >
+            <Button variant="shadow" className="mt-2" color="secondary">
+              Share
+            </Button>
+          </RWebShare>
+        )}
+
         {/* <LineShareButton
           openShareDialogOnClick={qrImgUrl !== "none"}
           title="ssss"
