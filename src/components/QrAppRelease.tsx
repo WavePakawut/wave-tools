@@ -149,7 +149,6 @@ const QrAppRelease = () => {
   //   };
   const onShare = async () => {
     const qrCodeView = document.getElementById("qr-view-box");
-    qrCodeView?.click();
 
     if (!qrCodeView) return;
     let imgUrl = "";
