@@ -149,11 +149,11 @@ const QrAppRelease = () => {
   //   };
   const onShare = async () => {
     const qrCodeView = document.getElementById("qr-view-box");
-
+    
     if (!qrCodeView) return;
     let imgUrl = "";
     await htmlToImage
-      .toPng(qrCodeView)
+      .toJpeg(qrCodeView)
       .then(function (dataUrl) {
         /* do something */
         imgUrl = dataUrl;
