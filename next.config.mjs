@@ -5,5 +5,5 @@ const nextConfig = {
     reactStrictMode: true,
     assetPrefix: isProd ? '/wave-tools' : '',
 };
-module.exports = nextConfig
+
 export default nextConfig;
