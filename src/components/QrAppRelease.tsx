@@ -24,6 +24,7 @@ import {
 } from "copy-image-clipboard";
 import { toast } from "sonner";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
+import { RWebShare } from "react-web-share";
 
 const QrAppRelease = () => {
   const { Canvas: CanvasQR } = useQRCode();
@@ -248,12 +249,32 @@ const QrAppRelease = () => {
             }}
           />
         </div>
-        <Button onClick={copyImage} className="mt-2" color="primary">
+        <Button
+          variant="shadow"
+          onClick={copyImage}
+          className="mt-2"
+          color="primary"
+        >
           Copy
         </Button>
-        <Button onClick={onShare} className="mt-2" color="secondary">
+        {/* <Button
+          variant="shadow"
+          onClick={onShare}
+          className="mt-2"
+          color="secondary"
+        >
           Share
-        </Button>
+        </Button> */}
+        <RWebShare
+          data={{
+            text: "Like humans, flamingos make friends for life",
+            files: [qrImgFile],
+            title: "Flamingos",
+          }}
+          onClick={() => console.log("shared successfully!")}
+        >
+          <button>Share 🔗</button>
+        </RWebShare>
         {/* <LineShareButton
           openShareDialogOnClick={qrImgUrl !== "none"}
           title="ssss"
