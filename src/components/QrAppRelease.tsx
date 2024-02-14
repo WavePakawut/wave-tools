@@ -85,7 +85,7 @@ const QrAppRelease = () => {
         imgUrl = dataUrl;
       })
       .catch((error) => {
-        toast(error);
+        toast(error.toString());
       });
     if (!imgUrl) return;
     console.log("dataUrl =>", imgUrl);
@@ -107,7 +107,7 @@ const QrAppRelease = () => {
           });
       }
     }).catch(error=>{
-        toast(error);
+        toast(error.toString());
     });
 
     localStorage.setItem("last_save_text1", text1.trim());
