@@ -10,7 +10,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@capacitor/share": "^5.0.7",
     "@nextui-org/react": "^2.2.9",
     "copy-image-clipboard": "^2.1.2",
     "framer-motion": "^11.0.5",

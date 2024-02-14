@@ -17,7 +17,7 @@ import React, {
 } from "react";
 import * as htmlToImage from "html-to-image";
 import { LineIcon, LineShareButton } from "react-share";
-import { Share } from "@capacitor/share";
+
 import {
   copyImageToClipboard,
   requestClipboardWritePermission,
@@ -97,7 +97,7 @@ const QrAppRelease = () => {
             // const imageObjectURL = URL.createObjectURL(value);
             // setQrImgUrl(imageObjectURL);
             const file = new File([value], "image.jpg", { type: value.type });
-            setQrImgFile(file)
+            setQrImgFile(file);
           })
           .catch((e) => {
             console.log("Error: ", e.message);
@@ -125,11 +125,11 @@ const QrAppRelease = () => {
     []
   );
   const onShare = async () => {
-    const canShare = await Share.canShare();
+    const canShare = navigator.canShare();
     console.log("canShare =>", canShare);
     console.log("qrImgUrl =>", qrImgUrl);
-    if (canShare.value && qrImgFile) {
-      await Share.share({
+    if (canShare && qrImgFile) {
+      await navigator.share({
         files: [qrImgFile],
         title: "Title", // titleText
         text: "text", // text
