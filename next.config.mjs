@@ -2,8 +2,8 @@
 const isProd = process.env.NODE_ENV === 'production';
 const nextConfig = {
     output:'export',
-    // reactStrictMode: true,
-    // assetPrefix: isProd ? '/wave-tools/' : '',
+    reactStrictMode: true,
+    assetPrefix: isProd ? '/wave-tools/' : '',
 };
 
 export default nextConfig;
