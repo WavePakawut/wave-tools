@@ -27,13 +27,9 @@ import { useLocalStorage } from "@/hooks/useLocalStorage";
 
 const QrAppRelease = () => {
   const { Canvas: CanvasQR } = useQRCode();
-  const [text1, setText1] = React.useState<string>(
-    localStorage.getItem("last_save_text1") || ""
-  );
+  const [text1, setText1] = React.useState<string>("");
 
-  const [text2, setText2] = React.useState<string>(
-    localStorage.getItem("last_save_text2") || ""
-  );
+  const [text2, setText2] = React.useState<string>("");
   const [lastText1List, setLastText1List] = useLocalStorage<string[]>(
     "last_saved_text1_list",
     []
