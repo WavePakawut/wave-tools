@@ -29,6 +29,8 @@ import { RWebShare } from "react-web-share";
 import { error } from "console";
 import { getBase64ImageFile } from "@/helpers";
 import generatePDF from "react-to-pdf";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 
 const QrAppRelease = () => {
   const qrBoxRef = useRef(null);
@@ -174,20 +176,50 @@ const QrAppRelease = () => {
     }, 1000);
   };
   const onSharePdf = async () => {
+    const getTargetElement = () => document.getElementById("qr-view-box");
+    if (!getTargetElement) return;
+    // const qrPdf = await generatePDF(getTargetElement, {
+    //   filename: "page.pdf",
+    //   method: "build",
+    // });
 
-    const qrPdf = await generatePDF(qrBoxRef, {
-      filename: "page.pdf",
-      method: "build",
-    });
-    const pdfData = qrPdf.output();
+    // const pdfData = qrPdf.output();
+    if (!qrBoxRef.current) return;
+    let success = false;
+    try {
+      const canvas = await html2canvas(qrBoxRef.current);
+      const pdfDoc = new jsPDF();
+      const imgData = canvas.toDataURL("image/png");
+
+      const pdfWidth = pdfDoc.internal.pageSize.getWidth();
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+      pdfDoc.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+
+      // pdfDoc.save("generate");
+      const pdfData = pdfDoc.output("blob");
+      // console.log('pdfData =>',pdfData)
+      // const pdfBlob = new Blob([pdfData], { type: "application/pdf" });
+      const imageFile = new File([pdfData], "page2.pdf", {
+        type: "application/pdf",
+        lastModified: Date.now(),
+      });
+      console.log("imageFile =>", imageFile);
+      setQrImgFile(imageFile);
+      success = true;
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+    }
+
+    if (!success) return;
 
     // Create a Blob from the PDF data
-    const pdfBlob = new Blob([pdfData], { type: "application/pdf" });
-    const imageFile = new File([pdfBlob], "page.pdf", {
-      type: "application/pdf",
-    });
+    // const pdfBlob = new Blob([pdfData], { type: "application/pdf" });
+    // const imageFile = new File([pdfBlob], "page2.pdf", {
+    //   type: "application/pdf",
+    // });
 
-    setQrImgFile(imageFile);
+    // setQrImgFile(imageFile);
     setTimeout(() => {
       const btnWebShare = document.getElementById("btn_web_share");
       btnWebShare?.click();
@@ -325,7 +357,7 @@ const QrAppRelease = () => {
           Share Image
         </Button>
         <Button
-          variant='shadow'
+          variant="shadow"
           onClick={onSharePdf}
           className="mt-2 bg-red-500"
           color="secondary"
@@ -335,9 +367,9 @@ const QrAppRelease = () => {
         <RWebShare
           data={
             {
-              text: "Like humans, flamingos make friends for life",
+              // text: "Like humans, flamingos make friends for life",
               files: [qrImgFile],
-              title: "Flamingos",
+              // title: "Flamingos",
             } as any
           }
           onClick={() => console.log("shared successfully!")}
