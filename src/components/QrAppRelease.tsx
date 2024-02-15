@@ -117,6 +117,7 @@ const QrAppRelease = () => {
       .catch((error) => {
         toast("requestClipboardWritePermission error:" + error.toString());
       });
+      
 
     localStorage.setItem("last_save_text1", text1.trim());
     localStorage.setItem("last_save_text2", text2.trim());
@@ -152,7 +153,7 @@ const QrAppRelease = () => {
   //       toast("Cannot share with this browser");
   //     }
   //   };
-  const onShare = async () => {
+  const onShare2 = async () => {
     const qrCodeView = document.getElementById("qr-view-box");
 
     if (!qrCodeView) return;
@@ -167,6 +168,21 @@ const QrAppRelease = () => {
         toast("htmlToImage error:" + error.toString());
       });
     if (!imgUrl) return;
+    console.log("dataUrl =>", imgUrl);
+    const file = getBase64ImageFile(imgUrl);
+    setQrImgFile(file);
+    setTimeout(() => {
+      const btnWebShare = document.getElementById("btn_web_share");
+      btnWebShare?.click();
+    }, 1000);
+  };
+  const onShare = async () => {
+    const qrCodeView = document.getElementById("qr-view-box");
+    if (!qrCodeView) return;
+    if (!qrBoxRef.current) return;
+    const canvas = await html2canvas(qrBoxRef.current);
+    const imgUrl = canvas.toDataURL("image/png");
+
     console.log("dataUrl =>", imgUrl);
     const file = getBase64ImageFile(imgUrl);
     setQrImgFile(file);
