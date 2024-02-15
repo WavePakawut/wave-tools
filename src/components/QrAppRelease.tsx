@@ -12,6 +12,7 @@ import React, {
   useDeferredValue,
   useEffect,
   useMemo,
+  useRef,
   useState,
   useTransition,
 } from "react";
@@ -27,8 +28,10 @@ import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { RWebShare } from "react-web-share";
 import { error } from "console";
 import { getBase64ImageFile } from "@/helpers";
+import generatePDF from "react-to-pdf";
 
 const QrAppRelease = () => {
+  const qrBoxRef = useRef(null);
   const { Canvas: CanvasQR } = useQRCode();
   const [text1, setText1] = React.useState<string>("");
 
@@ -149,7 +152,7 @@ const QrAppRelease = () => {
   //   };
   const onShare = async () => {
     const qrCodeView = document.getElementById("qr-view-box");
-    
+
     if (!qrCodeView) return;
     let imgUrl = "";
     await htmlToImage
@@ -165,6 +168,26 @@ const QrAppRelease = () => {
     console.log("dataUrl =>", imgUrl);
     const file = getBase64ImageFile(imgUrl);
     setQrImgFile(file);
+    setTimeout(() => {
+      const btnWebShare = document.getElementById("btn_web_share");
+      btnWebShare?.click();
+    }, 1000);
+  };
+  const onSharePdf = async () => {
+
+    const qrPdf = await generatePDF(qrBoxRef, {
+      filename: "page.pdf",
+      method: "build",
+    });
+    const pdfData = qrPdf.output();
+
+    // Create a Blob from the PDF data
+    const pdfBlob = new Blob([pdfData], { type: "application/pdf" });
+    const imageFile = new File([pdfBlob], "page.pdf", {
+      type: "application/pdf",
+    });
+
+    setQrImgFile(imageFile);
     setTimeout(() => {
       const btnWebShare = document.getElementById("btn_web_share");
       btnWebShare?.click();
@@ -250,6 +273,7 @@ const QrAppRelease = () => {
           }}
         />
         <div
+          ref={qrBoxRef}
           id="qr-view-box"
           className="bg-white justify-center items-center flex flex-col relative align-middle py-2 rounded"
         >
@@ -295,10 +319,18 @@ const QrAppRelease = () => {
         <Button
           variant="shadow"
           onClick={onShare}
-          className="mt-2"
+          className="mt-2 bg-green-600"
           color="secondary"
         >
-          Share
+          Share Image
+        </Button>
+        <Button
+          variant='shadow'
+          onClick={onSharePdf}
+          className="mt-2 bg-red-500"
+          color="secondary"
+        >
+          Share PDF
         </Button>
         <RWebShare
           data={
@@ -312,6 +344,7 @@ const QrAppRelease = () => {
         >
           <button id={"btn_web_share"} />
         </RWebShare>
+
         {/* {qrImgFile && (
           <RWebShare
             data={
