@@ -117,15 +117,14 @@ const QrAppRelease = () => {
       .catch((error) => {
         toast("requestClipboardWritePermission error:" + error.toString());
       });
-      
 
     localStorage.setItem("last_save_text1", text1.trim());
     localStorage.setItem("last_save_text2", text2.trim());
-    if (!lastText1List.includes(text1.trim())) {
+    if (text1.trim() && !lastText1List.includes(text1.trim())) {
       lastText1List.push(text1.trim());
       setLastText1List([...lastText1List]);
     }
-    if (!lastText2List.includes(text2.trim())) {
+    if (text1.trim() && !lastText2List.includes(text2.trim())) {
       lastText2List.push(text2.trim());
       setLastText2List([...lastText2List]);
     }
